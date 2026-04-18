@@ -5,7 +5,7 @@ Personal development rules and conventions for working on this repository.
 ## General Principles
 
 - This repo contains personal agentic skills for David Weinstein's workflows.
-- Each skill lives in its own folder under `skills/`.
+- Each skill lives in its own folder under `.github/skills/`.
 - Keep skills focused and single-purpose.
 
 ## Skill Structure
