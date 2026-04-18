@@ -174,7 +174,8 @@ $statusBg       = Convert-HslToHex $hue 0.5 0.2     # status bar
 Write-Host "  Color:  hue=$hue ($accentColor)" -ForegroundColor Green
 
 # --- Create .code-workspace file ---
-$workspaceFile = Join-Path $worktreePath '.worktree.code-workspace'
+$safeFileName = ($BranchName -replace '[/\\]', '-') + '.code-workspace'
+$workspaceFile = Join-Path $worktreePath $safeFileName
 $workspace = @{
     folders = @(
         @{ path = '.' }

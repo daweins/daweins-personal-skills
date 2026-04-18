@@ -47,7 +47,7 @@ Or from the installed location:
 3. **Loads config** — reads worktree root from `config.json` in the installed skill directory (`~/.agents/skills/create-branch-in-worktree/config.json`). If missing, prompts the user for a worktree root path and saves it
 4. **Creates directory structure** — `{worktree-root}/{repo-name}/{branch-name}`
 5. **Creates branch + worktree** — `git worktree add {path} -b {branch-name}`
-6. **Generates a unique color scheme** — hashes the branch name to produce a deterministic hue, then generates a `.worktree.code-workspace` file with branch-specific title bar, status bar, activity bar, and sidebar colors. This layers on top of `.vscode/settings.json` so team settings are preserved
+6. **Generates a unique color scheme** — hashes the branch name to produce a deterministic hue, then generates a `{branch-name}.code-workspace` file with branch-specific title bar, status bar, activity bar, and sidebar colors. This layers on top of `.vscode/settings.json` so team settings are preserved
 7. **Opens in VS Code** — opens the `.code-workspace` file in a new VS Code window, applying the branch-specific colors
 
 ### Configuration
