@@ -24,8 +24,8 @@ $ErrorActionPreference = 'Stop'
 
 # --- Paths ---
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
-$skillsSource = Join-Path $repoRoot '.github' 'skills'
-$targetDir = Join-Path $HOME '.agents' 'skills'
+$skillsSource = Join-Path (Join-Path $repoRoot '.github') 'skills'
+$targetDir = Join-Path (Join-Path $HOME '.agents') 'skills'
 $manifestFile = Join-Path $targetDir '.daweins-installed-skills.json'
 
 if (-not (Test-Path $skillsSource)) {
