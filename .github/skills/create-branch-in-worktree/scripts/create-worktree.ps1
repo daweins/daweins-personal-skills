@@ -10,12 +10,19 @@
     (~/.agents/skills/create-branch-in-worktree/config.json).
 .PARAMETER BranchName
     The name of the new branch to create.
+.PARAMETER WorktreeRoot
+    Optional. Set a new worktree root directory. Saves to config and uses it immediately.
+    Does not move existing worktrees from the old location.
 .EXAMPLE
     ./create-worktree.ps1 -BranchName feature/my-feature
+.EXAMPLE
+    ./create-worktree.ps1 -BranchName feature/xyz -WorktreeRoot D:\Worktrees
 #>
 param(
     [Parameter(Mandatory = $true)]
-    [string]$BranchName
+    [string]$BranchName,
+
+    [string]$WorktreeRoot
 )
 
 Set-StrictMode -Version Latest
@@ -57,6 +64,20 @@ if (Test-Path $configFile) {
     $config = Get-Content $configFile -Raw | ConvertFrom-Json
     $worktreeRoot = $config.worktreeRoot
 } else {
+    $worktreeRoot = $null
+}
+
+# Override with parameter if provided
+if ($WorktreeRoot) {
+    $worktreeRoot = $WorktreeRoot.Trim('"').Trim("'")
+    if (-not (Test-Path $configDir)) {
+        New-Item -ItemType Directory -Path $configDir -Force | Out-Null
+    }
+    @{ worktreeRoot = $worktreeRoot } | ConvertTo-Json | Set-Content $configFile -Encoding UTF8
+    Write-Host "Worktree root updated to: $worktreeRoot" -ForegroundColor Green
+}
+
+if ([string]::IsNullOrWhiteSpace($worktreeRoot)) {
     Write-Host "`nNo worktree root configured yet." -ForegroundColor Yellow
     $worktreeRoot = Read-Host "Enter the root directory for all worktrees (e.g., C:\Worktrees)"
     $worktreeRoot = $worktreeRoot.Trim('"').Trim("'")

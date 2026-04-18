@@ -59,4 +59,8 @@ The worktree root location is stored in `~/.agents/skills/create-branch-in-workt
 }
 ```
 
-To change the worktree root, edit or delete this file. The script will re-prompt on next run if the file is missing.
+To change the worktree root, pass `-WorktreeRoot` with the new path. This updates the config for all future runs. Existing worktrees in the old location are not moved.
+
+```powershell
+./.github/skills/create-branch-in-worktree/scripts/create-worktree.ps1 -BranchName "feature/xyz" -WorktreeRoot "D:\Worktrees"
+```
