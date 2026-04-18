@@ -168,7 +168,6 @@ function Convert-HslToHex {
 
 $accentColor    = Convert-HslToHex $hue 0.7 0.55    # vibrant accent
 $darkBg         = Convert-HslToHex $hue 0.3 0.12    # dark background tint
-$darkBgAlt      = Convert-HslToHex $hue 0.25 0.15   # slightly lighter variant
 $dimForeground  = Convert-HslToHex $hue 0.3 0.45    # muted text
 $statusBg       = Convert-HslToHex $hue 0.5 0.2     # status bar
 
@@ -186,20 +185,8 @@ $workspace = @{
             'titleBar.activeForeground'       = $accentColor
             'titleBar.inactiveBackground'     = $darkBg
             'titleBar.inactiveForeground'     = $dimForeground
-            'activityBar.background'          = $darkBg
-            'activityBar.foreground'          = $accentColor
-            'activityBar.inactiveForeground'  = $dimForeground
             'statusBar.background'            = $statusBg
             'statusBar.foreground'            = $accentColor
-            'statusBar.debuggingBackground'   = $accentColor
-            'statusBar.debuggingForeground'   = $darkBg
-            'sideBar.background'              = $darkBgAlt
-            'sideBarTitle.foreground'         = $accentColor
-            'tab.activeBorder'               = $accentColor
-            'editorLineNumber.activeForeground' = $accentColor
-            'focusBorder'                    = $accentColor
-            'badge.background'               = $accentColor
-            'badge.foreground'               = $darkBg
         }
     }
 }
