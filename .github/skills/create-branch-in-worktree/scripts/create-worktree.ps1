@@ -143,8 +143,70 @@ Write-Host "`nWorktree created:" -ForegroundColor Green
 Write-Host "  Branch: $BranchName" -ForegroundColor Green
 Write-Host "  Path:   $worktreePath" -ForegroundColor Green
 
-# --- Open in VS Code ---
-Write-Host "Opening in new VS Code window..." -ForegroundColor Cyan
-code $worktreePath
+# --- Generate branch-specific color scheme ---
+# Hash the branch name to get a deterministic hue (0-359)
+$hashBytes = [System.Security.Cryptography.SHA256]::Create().ComputeHash(
+    [System.Text.Encoding]::UTF8.GetBytes($BranchName)
+)
+$hue = ([BitConverter]::ToUInt16($hashBytes, 0)) % 360
+
+# HSL to RGB conversion for dark theme colors
+function Convert-HslToHex {
+    param([int]$H, [double]$S, [double]$L)
+    $C = (1 - [Math]::Abs(2 * $L - 1)) * $S
+    $X = $C * (1 - [Math]::Abs(($H / 60.0) % 2 - 1))
+    $M = $L - $C / 2
+    if     ($H -lt 60)  { $R1=$C; $G1=$X; $B1=0 }
+    elseif ($H -lt 120) { $R1=$X; $G1=$C; $B1=0 }
+    elseif ($H -lt 180) { $R1=0;  $G1=$C; $B1=$X }
+    elseif ($H -lt 240) { $R1=0;  $G1=$X; $B1=$C }
+    elseif ($H -lt 300) { $R1=$X; $G1=0;  $B1=$C }
+    else                { $R1=$C; $G1=0;  $B1=$X }
+    $R = [int](($R1 + $M) * 255); $G = [int](($G1 + $M) * 255); $B = [int](($B1 + $M) * 255)
+    return "#{0:x2}{1:x2}{2:x2}" -f $R, $G, $B
+}
+
+$accentColor    = Convert-HslToHex $hue 0.7 0.55    # vibrant accent
+$darkBg         = Convert-HslToHex $hue 0.3 0.12    # dark background tint
+$darkBgAlt      = Convert-HslToHex $hue 0.25 0.15   # slightly lighter variant
+$dimForeground  = Convert-HslToHex $hue 0.3 0.45    # muted text
+$statusBg       = Convert-HslToHex $hue 0.5 0.2     # status bar
+
+Write-Host "  Color:  hue=$hue ($accentColor)" -ForegroundColor Green
+
+# --- Create .code-workspace file ---
+$workspaceFile = Join-Path $worktreePath '.worktree.code-workspace'
+$workspace = @{
+    folders = @(
+        @{ path = '.' }
+    )
+    settings = @{
+        'workbench.colorCustomizations' = @{
+            'titleBar.activeBackground'      = $darkBg
+            'titleBar.activeForeground'       = $accentColor
+            'titleBar.inactiveBackground'     = $darkBg
+            'titleBar.inactiveForeground'     = $dimForeground
+            'activityBar.background'          = $darkBg
+            'activityBar.foreground'          = $accentColor
+            'activityBar.inactiveForeground'  = $dimForeground
+            'statusBar.background'            = $statusBg
+            'statusBar.foreground'            = $accentColor
+            'statusBar.debuggingBackground'   = $accentColor
+            'statusBar.debuggingForeground'   = $darkBg
+            'sideBar.background'              = $darkBgAlt
+            'sideBarTitle.foreground'         = $accentColor
+            'tab.activeBorder'               = $accentColor
+            'editorLineNumber.activeForeground' = $accentColor
+            'focusBorder'                    = $accentColor
+            'badge.background'               = $accentColor
+            'badge.foreground'               = $darkBg
+        }
+    }
+}
+$workspace | ConvertTo-Json -Depth 5 | Set-Content $workspaceFile -Encoding UTF8
+
+# --- Open in VS Code via workspace file ---
+Write-Host "Opening in new VS Code window with branch-specific colors..." -ForegroundColor Cyan
+code $workspaceFile
 
 Write-Host "`nDone!" -ForegroundColor Green
