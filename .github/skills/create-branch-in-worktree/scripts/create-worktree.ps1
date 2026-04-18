@@ -8,6 +8,9 @@
 
     Worktree root is stored in config.json in the installed skill directory
     (~/.agents/skills/create-branch-in-worktree/config.json).
+
+    Branch-specific color scheme inspired by Glenn Musa:
+    https://github.com/glennmusa/copilot-prompts/tree/main/worktrees
 .PARAMETER BranchName
     The name of the new branch to create.
 .PARAMETER WorktreeRoot
